@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Omar Hussain</title>
+<meta name="description" content="omar hussain, software engineer. part-time computer scientist, full-time nerd." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          geist: ['Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+</head>
+<body class="font-geist antialiased bg-[#09090b] text-zinc-100">
+
+  <nav id="navbar" class="fixed top-0 inset-x-0 z-50 bg-zinc-950/90 backdrop-blur-md border-b border-transparent transition-colors duration-200">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="#top" class="text-xl font-semibold tracking-tight text-white">
+        Omar Hussain<span class="inline-block w-[3px] h-[3px] ml-[1.5px] align-baseline bg-indigo-500"></span>
+      </a>
+      <div class="hidden sm:flex items-center gap-8">
+        <a href="#about" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">about</a>
+        <a href="#projects" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">projects</a>
+        <a href="#skills" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">skills</a>
+        <a href="#contact" class="px-6 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 hover:scale-105 text-white text-sm font-medium transition-all duration-200">get in touch</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top" class="max-w-5xl mx-auto px-6">
+
+    <section class="min-h-screen flex flex-col justify-center pt-16">
+      <p class="text-sm font-medium text-zinc-400 mb-4">hi, i'm</p>
+      <h1 class="text-5xl md:text-7xl font-bold leading-[1.1] text-white">
+        Omar Hussain<span class="inline-block w-[0.08em] h-[0.08em] ml-[0.04em] align-baseline bg-indigo-500"></span>
+      </h1>
+      <p class="mt-6 text-base md:text-lg text-zinc-400 leading-relaxed max-w-xl">
+        part-time computer scientist, full-time nerd. i build software, mostly the kind that involves graphs, memory, or search, and i'm looking for a full-time software engineering role.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="#projects" class="px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all duration-200">view projects</a>
+        <a href="#contact" class="px-6 py-3 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 font-medium transition-all duration-200">get in touch</a>
+      </div>
+    </section>
+
+    <section id="about" class="py-24 border-t border-zinc-800/80">
+      <h2 class="text-3xl md:text-4xl font-bold text-white">
+        about<span class="inline-block w-[0.08em] h-[0.08em] ml-[0.04em] align-baseline bg-indigo-500"></span>
+      </h2>
+      <p class="mt-6 text-base text-zinc-400 leading-relaxed max-w-2xl">
+        i'm a software engineer with a soft spot for systems programming, data structures, and the occasional machine learning side project. my background is in computer science, and i care more about how something works under the hood than how it looks on the surface, though that's changing too. i'm interested in software engineering roles with room to grow toward product.
+      </p>
+    </section>
+
+    <section id="skills" class="py-24 border-t border-zinc-800/80">
+      <h2 class="text-3xl md:text-4xl font-bold text-white">
+        skills<span class="inline-block w-[0.08em] h-[0.08em] ml-[0.04em] align-baseline bg-indigo-500"></span>
+      </h2>
+      <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+          <p class="text-lg font-semibold text-white">Java</p>
+          <p class="mt-1 text-xs font-medium text-zinc-400">data structures and algorithms</p>
+        </div>
+        <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+          <p class="text-lg font-semibold text-white">C</p>
+          <p class="mt-1 text-xs font-medium text-zinc-400">systems and memory</p>
+        </div>
+        <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+          <p class="text-lg font-semibold text-white">Python</p>
+          <p class="mt-1 text-xs font-medium text-zinc-400">machine learning</p>
+        </div>
+        <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+          <p class="text-lg font-semibold text-white">GeoJSON / SVG</p>
+          <p class="mt-1 text-xs font-medium text-zinc-400">mapping tools</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="py-24 border-t border-zinc-800/80">
+      <h2 class="text-3xl md:text-4xl font-bold text-white">
+        projects<span class="inline-block w-[0.08em] h-[0.08em] ml-[0.04em] align-baseline bg-indigo-500"></span>
+      </h2>
+      <div class="mt-8 grid sm:grid-cols-2 gap-6">
+        <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+          <p class="text-lg font-semibold text-white">spell checker</p>
+          <p class="mt-2 text-base text-zinc-400 leading-relaxed">a spell checker built in java using tree-based data structures.</p>
+        </div>
+        <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+          <p class="text-lg font-semibold text-white">six degrees of kevin bacon</p>
+          <p class="mt-2 text-base text-zinc-400 leading-relaxed">graph modeling to find the shortest path between any two actors.</p>
+        </div>
+        <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+          <p class="text-lg font-semibold text-white">in-memory search engine</p>
+          <p class="mt-2 text-base text-zinc-400 leading-relaxed">a search engine written in java that indexes and queries entirely in memory.</p>
+        </div>
+        <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+          <p class="text-lg font-semibold text-white">memory allocator</p>
+          <p class="mt-2 text-base text-zinc-400 leading-relaxed">a custom memory allocator written in c, handling allocation and freeing manually.</p>
+        </div>
+        <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+          <p class="text-lg font-semibold text-white">geojson to svg tool</p>
+          <p class="mt-2 text-base text-zinc-400 leading-relaxed">a mapping tool that converts geojson data into svg, built in collaboration with mapbox.</p>
+        </div>
+        <div class="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-6 hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300">
+          <p class="text-lg font-semibold text-white">clip it chat</p>
+          <p class="mt-2 text-base text-zinc-400 leading-relaxed">a machine learning model that parses twitch chat to find clippable moments.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="py-24 border-t border-zinc-800/80">
+      <h2 class="text-3xl md:text-4xl font-bold text-white">
+        get in touch<span class="inline-block w-[0.08em] h-[0.08em] ml-[0.04em] align-baseline bg-indigo-500"></span>
+      </h2>
+      <p class="mt-6 text-base text-zinc-400 leading-relaxed max-w-xl">
+        open to full-time software engineering roles. reach out or find me around the internet.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="mailto:odhussain@dons.usfca.edu" class="px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all duration-200">email</a>
+        <a href="https://github.com/Omnitrix4m3" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 font-medium transition-all duration-200">github</a>
+        <a href="https://linkedin.com/in/omar-h-680347124/" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 font-medium transition-all duration-200">linkedin</a>
+      </div>
+    </section>
+
+    <footer class="py-10 border-t border-zinc-800/80 text-center">
+      <p class="text-xs font-medium text-zinc-500">omar hussain, built by a friend who owed him one.</p>
+    </footer>
+
+  </main>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    function onScroll() {
+      if (window.scrollY > 0) {
+        navbar.classList.add('border-zinc-800/80');
+      } else {
+        navbar.classList.remove('border-zinc-800/80');
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  </script>
+
+</body>
+</html>
