@@ -362,6 +362,12 @@
   .channel .arrow { flex: none; color: var(--text-mute); }
 
   .footnote { margin-top: 2.5rem; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-mute); }
+  .footnote a {
+    color: var(--text-dim); text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    transition: color 160ms ease, border-color 160ms ease;
+  }
+  .footnote a:hover { color: var(--exotic); border-color: var(--exotic); }
 
   /* ---------- responsive ---------- */
   @media (max-width: 900px) {
@@ -679,7 +685,7 @@
             <span class="arrow">&#8594;</span>
           </a>
 
-          <p class="footnote">omar hussain, built by a friend who owed him one.</p>
+          <p class="footnote">powered by <a href="https://rabih.app" target="_blank" rel="noopener noreferrer">rabih.app</a></p>
         </div>
       </section>
 
