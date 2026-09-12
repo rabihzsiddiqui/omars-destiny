@@ -123,19 +123,20 @@
   /* ---------- screens ---------- */
   .screens {
     flex: 1; min-height: 0; position: relative; overflow: hidden;
-    --swipe-dist: clamp(32px, 7vw, 120px);
+    --swipe-dist: 100%;
   }
+  /* screens travel the full width and stay opaque the whole way, so the
+     outgoing one is still readable as it leaves rather than fading out early */
   .screen {
     position: absolute; inset: 0;
     overflow-y: auto; overflow-x: hidden;
     padding: 2rem 1.25rem 3rem;
-    opacity: 0; visibility: hidden;
+    visibility: hidden;
     transform: translate3d(var(--sx, 0px), 0, 0);
-    transition: opacity 280ms ease,
-                transform 440ms cubic-bezier(0.22, 1, 0.36, 1),
-                visibility 440ms;
+    transition: transform 640ms cubic-bezier(0.36, 0.02, 0.16, 1),
+                visibility 640ms;
   }
-  .screen.active { opacity: 1; visibility: visible; }
+  .screen.active { visibility: visible; }
   .screen.no-anim { transition: none !important; }
 
   /* foreground parallax targets sit closer to the viewer than the backdrop */
