@@ -121,15 +121,25 @@
   }
 
   /* ---------- screens ---------- */
-  .screens { flex: 1; min-height: 0; position: relative; }
+  .screens {
+    flex: 1; min-height: 0; position: relative; overflow: hidden;
+    --swipe-dist: clamp(32px, 7vw, 120px);
+  }
   .screen {
     position: absolute; inset: 0;
     overflow-y: auto; overflow-x: hidden;
     padding: 2rem 1.25rem 3rem;
-    opacity: 0; visibility: hidden; transform: translateY(10px);
-    transition: opacity 260ms ease, transform 260ms ease, visibility 260ms;
+    opacity: 0; visibility: hidden;
+    transform: translate3d(var(--sx, 0px), 0, 0);
+    transition: opacity 280ms ease,
+                transform 440ms cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 440ms;
   }
-  .screen.active { opacity: 1; visibility: visible; transform: translateY(0); }
+  .screen.active { opacity: 1; visibility: visible; }
+  .screen.no-anim { transition: none !important; }
+
+  /* foreground parallax targets sit closer to the viewer than the backdrop */
+  [data-fg] { will-change: transform; }
   .screen-inner { max-width: 1180px; margin: 0 auto; }
 
   /* ---------- character screen ---------- */
@@ -370,16 +380,16 @@
 
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
-    .bg-layer { transform: none !important; }
+    .bg-layer, [data-fg] { transform: none !important; }
   }
 </style>
 </head>
 <body>
 
   <div class="backdrop" aria-hidden="true">
-    <div class="bg-layer bg-vista" data-depth="6"></div>
-    <div class="bg-layer bg-motes" data-depth="16"></div>
-    <div class="bg-layer bg-horizon" data-depth="3"></div>
+    <div class="bg-layer bg-vista" data-depth="3"></div>
+    <div class="bg-layer bg-horizon" data-depth="5"></div>
+    <div class="bg-layer bg-motes" data-depth="9"></div>
     <div class="bg-layer bg-scrim"></div>
   </div>
 
@@ -412,7 +422,7 @@
         <div class="screen-inner character-grid">
 
           <div>
-            <div class="emblem">
+            <div class="emblem" data-fg="22">
               <div class="emblem-icon">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <rect x="7" y="7" width="10" height="10" fill="#ceae33" transform="rotate(45 12 12)"/>
@@ -431,7 +441,7 @@
               </div>
             </div>
 
-            <div class="panel-block">
+            <div class="panel-block" data-fg="17">
               <span class="label">Guardian Profile</span>
               <p class="bio">i'm a software engineer with a soft spot for systems programming, data structures, and the occasional machine learning side project. my background is in computer science, and i care more about how something works under the hood than how it looks on the surface, though that's changing too. i'm interested in software engineering roles with room to grow toward product.</p>
               <div class="quick-links">
@@ -443,7 +453,7 @@
           </div>
 
           <div>
-            <div class="slot-group">
+            <div class="slot-group" data-fg="14">
               <span class="label">Languages</span>
 
               <div class="slot">
@@ -474,7 +484,7 @@
               </div>
             </div>
 
-            <div class="slot-group">
+            <div class="slot-group" data-fg="12">
               <span class="label">Utility</span>
 
               <div class="slot">
@@ -503,12 +513,12 @@
       <!-- ============ INVENTORY ============ -->
       <section class="screen" id="screen-inventory" role="tabpanel" aria-label="Inventory">
         <div class="screen-inner">
-          <div class="inv-head">
+          <div class="inv-head" data-fg="17">
             <h2>Archive</h2>
             <span class="label">6 items</span>
           </div>
 
-          <div class="inv-grid">
+          <div class="inv-grid" data-fg="13">
 
             <button class="item" style="--tier: var(--exotic)">
               <div class="item-thumb">
@@ -641,7 +651,7 @@
 
       <!-- ============ TRANSMISSION ============ -->
       <section class="screen" id="screen-comms" role="tabpanel" aria-label="Transmission">
-        <div class="screen-inner comms">
+        <div class="screen-inner comms" data-fg="16">
           <h2>Open a channel</h2>
           <p class="sub">open to full-time software engineering roles. reach out, or find me around the internet.</p>
 
@@ -718,15 +728,49 @@
         inventory: document.getElementById('screen-inventory'),
         comms: document.getElementById('screen-comms')
       };
+      var order = ['character', 'inventory', 'comms'];
+      var current = 'character';
+
+      var IN = 'var(--swipe-dist)';
+      var OUT = 'calc(-1 * var(--swipe-dist))';
+
+      function goTo(target) {
+        if (target === current || !screens[target]) return;
+        closeInspect();
+
+        var forward = order.indexOf(target) > order.indexOf(current);
+        var outgoing = screens[current];
+        var incoming = screens[target];
+
+        // park the incoming screen on its entry side before it becomes visible
+        incoming.classList.add('no-anim');
+        incoming.style.setProperty('--sx', forward ? IN : OUT);
+        void incoming.offsetWidth;
+        incoming.classList.remove('no-anim');
+
+        outgoing.classList.remove('active');
+        outgoing.style.setProperty('--sx', forward ? OUT : IN);
+
+        incoming.scrollTop = 0;
+        incoming.classList.add('active');
+        incoming.style.setProperty('--sx', '0px');
+
+        tabs.forEach(function (t) {
+          t.setAttribute('aria-selected', String(t.getAttribute('data-screen') === target));
+        });
+        current = target;
+      }
 
       tabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
-          var target = tab.getAttribute('data-screen');
-          tabs.forEach(function (t) { t.setAttribute('aria-selected', String(t === tab)); });
-          Object.keys(screens).forEach(function (key) {
-            screens[key].classList.toggle('active', key === target);
-          });
-        });
+        tab.addEventListener('click', function () { goTo(tab.getAttribute('data-screen')); });
+      });
+
+      // left and right arrows move between screens, the way bumpers do in game
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        if (inspect.classList.contains('open')) return;
+        var i = order.indexOf(current) + (e.key === 'ArrowRight' ? 1 : -1);
+        if (i >= 0 && i < order.length) goTo(order[i]);
       });
 
       /* ---------- inspect panel ---------- */
@@ -796,6 +840,7 @@
       }
 
       function closeInspect() {
+        if (!inspect.classList.contains('open')) return;
         inspect.classList.remove('open');
         scrim.classList.remove('open');
         inspect.setAttribute('aria-hidden', 'true');
@@ -813,7 +858,16 @@
 
       /* ---------- parallax ---------- */
       if (!reduceMotion) {
-        var layers = [].slice.call(document.querySelectorAll('.bg-layer[data-depth]'));
+        // depth is how far an element sits toward the viewer, so the backdrop
+        // drifts a little and the interface panels drift more
+        var moving = [].slice.call(document.querySelectorAll('.bg-layer[data-depth], [data-fg]'))
+          .map(function (el) {
+            return {
+              el: el,
+              depth: parseFloat(el.getAttribute('data-depth') || el.getAttribute('data-fg')) || 5
+            };
+          });
+
         var tx = 0, ty = 0, cx = 0, cy = 0;
 
         window.addEventListener('mousemove', function (e) {
@@ -822,12 +876,15 @@
         }, { passive: true });
 
         (function tick() {
-          cx += (tx - cx) * 0.06;
-          cy += (ty - cy) * 0.06;
-          layers.forEach(function (layer) {
-            var d = parseFloat(layer.getAttribute('data-depth')) || 5;
-            layer.style.transform = 'translate3d(' + (-cx * d) + 'px,' + (-cy * d) + 'px,0)';
-          });
+          var dx = tx - cx, dy = ty - cy;
+          if (Math.abs(dx) > 0.0005 || Math.abs(dy) > 0.0005) {
+            cx += dx * 0.06;
+            cy += dy * 0.06;
+            moving.forEach(function (m) {
+              m.el.style.transform =
+                'translate3d(' + (-cx * m.depth).toFixed(2) + 'px,' + (-cy * m.depth).toFixed(2) + 'px,0)';
+            });
+          }
           requestAnimationFrame(tick);
         })();
       }
