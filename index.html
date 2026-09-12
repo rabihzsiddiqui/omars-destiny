@@ -27,7 +27,21 @@
     --text: #f2f4f7;
     --text-dim: #9aa3b0;
     --text-mute: #5d6675;
+
+    /* per screen accents, the way each destination carries its own cast */
+    --acc-character: #ceae33;
+    --acc-inventory: #b083d6;
+    --acc-comms: #6fd8e8;
   }
+
+  body { --chrome-accent: var(--acc-character); --screen-bg: #0b0e14; }
+  body[data-theme="character"] { --chrome-accent: var(--acc-character); --screen-bg: #0c0e13; }
+  body[data-theme="inventory"] { --chrome-accent: var(--acc-inventory); --screen-bg: #0e0a16; }
+  body[data-theme="comms"]     { --chrome-accent: var(--acc-comms);     --screen-bg: #05101a; }
+
+  #screen-character { --accent: var(--acc-character); }
+  #screen-inventory { --accent: var(--acc-inventory); }
+  #screen-comms     { --accent: var(--acc-comms); }
 
   * { box-sizing: border-box; }
 
@@ -48,13 +62,38 @@
   }
 
   /* ---------- parallax backdrop ---------- */
-  .backdrop { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: var(--bg); }
+  .backdrop {
+    position: fixed; inset: 0; z-index: 0; overflow: hidden;
+    background-color: var(--screen-bg);
+    transition: background-color 900ms ease;
+  }
   .bg-layer { position: absolute; inset: -8%; will-change: transform; }
+
+  /* one tint per screen, cross faded so the hue shift reads as a move
+     between places rather than a hard colour switch */
+  .bg-tint { opacity: 0; transition: opacity 900ms ease; }
+  .bg-tint.on { opacity: 1; }
+  .tint-character {
+    background:
+      radial-gradient(50% 40% at 76% 26%, rgba(206,174,51,0.20), transparent 70%),
+      radial-gradient(62% 50% at 20% 72%, rgba(150,115,45,0.16), transparent 70%);
+  }
+  .tint-inventory {
+    background:
+      radial-gradient(55% 45% at 28% 30%, rgba(150,95,200,0.20), transparent 70%),
+      radial-gradient(52% 46% at 80% 74%, rgba(82,47,101,0.30), transparent 70%);
+  }
+  .tint-comms {
+    background:
+      radial-gradient(52% 42% at 70% 26%, rgba(80,200,225,0.16), transparent 70%),
+      radial-gradient(60% 50% at 24% 76%, rgba(45,110,175,0.24), transparent 70%);
+  }
+  /* the vista carries shape and luminance only, the tint layers carry hue */
   .bg-vista {
     background:
-      radial-gradient(60% 45% at 25% 65%, rgba(70,105,165,0.30), transparent 70%),
-      radial-gradient(45% 40% at 78% 30%, rgba(206,174,51,0.12), transparent 70%),
-      radial-gradient(70% 50% at 50% 110%, rgba(20,30,50,0.85), transparent 70%);
+      radial-gradient(60% 45% at 25% 65%, rgba(125,145,180,0.20), transparent 70%),
+      radial-gradient(45% 40% at 78% 30%, rgba(160,172,195,0.10), transparent 70%),
+      radial-gradient(70% 50% at 50% 110%, rgba(10,14,24,0.85), transparent 70%);
     filter: blur(8px);
   }
   .bg-horizon {
@@ -71,7 +110,7 @@
       radial-gradient(1px 1px at 44% 38%, rgba(255,255,255,0.5) 0 100%, transparent 100%),
       radial-gradient(1.5px 1.5px at 93% 15%, rgba(255,255,255,0.6) 0 100%, transparent 100%);
   }
-  .bg-scrim { background: rgba(6,8,12,0.55); }
+  .bg-scrim { background: rgba(6,8,12,0.42); }
 
   /* ---------- app shell ---------- */
   .app {
@@ -111,8 +150,9 @@
   .tab .pip {
     width: 5px; height: 5px; transform: rotate(45deg);
     background: currentColor; opacity: 0.5;
+    transition: background-color 700ms ease, opacity 200ms ease;
   }
-  .tab[aria-selected="true"] .pip { opacity: 1; background: var(--exotic); }
+  .tab[aria-selected="true"] .pip { opacity: 1; background: var(--chrome-accent); }
 
   .topbar-meta { display: flex; align-items: center; gap: 1.1rem; }
   .topbar-meta .val {
@@ -125,18 +165,25 @@
     flex: 1; min-height: 0; position: relative; overflow: hidden;
     --swipe-dist: 100%;
   }
-  /* screens travel the full width and stay opaque the whole way, so the
-     outgoing one is still readable as it leaves rather than fading out early */
+  /* screens travel a full width. the fade is asymmetric on purpose: leaving
+     holds opacity until late so the slide is still visible, arriving lifts
+     early so the incoming screen is readable on its way in */
   .screen {
     position: absolute; inset: 0;
     overflow-y: auto; overflow-x: hidden;
     padding: 2rem 1.25rem 3rem;
-    visibility: hidden;
+    opacity: 0; visibility: hidden;
     transform: translate3d(var(--sx, 0px), 0, 0);
     transition: transform 640ms cubic-bezier(0.36, 0.02, 0.16, 1),
+                opacity 560ms cubic-bezier(0.064, 0.01, 1, 0.4),
                 visibility 640ms;
   }
-  .screen.active { visibility: visible; }
+  .screen.active {
+    opacity: 1; visibility: visible;
+    transition: transform 640ms cubic-bezier(0.36, 0.02, 0.16, 1),
+                opacity 380ms cubic-bezier(0.2, 0.6, 0.3, 1),
+                visibility 640ms;
+  }
   .screen.no-anim { transition: none !important; }
 
   /* foreground parallax targets sit closer to the viewer than the backdrop */
@@ -205,8 +252,8 @@
     transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
   }
   .btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.28); }
-  .btn-gold { border-color: rgba(206,174,51,0.55); color: var(--exotic); }
-  .btn-gold:hover { background: rgba(206,174,51,0.12); border-color: var(--exotic); }
+  .btn-accent { border-color: var(--accent); color: var(--accent); opacity: 0.9; }
+  .btn-accent:hover { background: rgba(255,255,255,0.07); opacity: 1; }
 
   /* ---------- equipment slots ---------- */
   .slot-group + .slot-group { margin-top: 1.75rem; }
@@ -253,7 +300,7 @@
   }
   .item:hover, .item:focus-visible {
     background: rgba(255,255,255,0.09);
-    border-color: rgba(255,255,255,0.3);
+    border-color: var(--accent);
     transform: translateY(-2px);
     outline: none;
   }
@@ -357,7 +404,7 @@
     transition: background 160ms ease, border-color 160ms ease;
   }
   .channel + .channel { margin-top: 0.6rem; }
-  .channel:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.28); }
+  .channel:hover { background: rgba(255,255,255,0.08); border-color: var(--accent); }
   .channel-k { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-mute); }
   .channel-v { font-size: 0.92rem; margin-top: 0.25rem; word-break: break-all; }
   .channel .arrow { flex: none; color: var(--text-mute); }
@@ -368,7 +415,7 @@
     border-bottom: 1px solid var(--line);
     transition: color 160ms ease, border-color 160ms ease;
   }
-  .footnote a:hover { color: var(--exotic); border-color: var(--exotic); }
+  .footnote a:hover { color: var(--accent); border-color: var(--accent); }
 
   /* ---------- responsive ---------- */
   @media (max-width: 900px) {
@@ -391,10 +438,13 @@
   }
 </style>
 </head>
-<body>
+<body data-theme="character">
 
   <div class="backdrop" aria-hidden="true">
     <div class="bg-layer bg-vista" data-depth="3"></div>
+    <div class="bg-layer bg-tint tint-character on" data-depth="4" data-tint="character"></div>
+    <div class="bg-layer bg-tint tint-inventory" data-depth="4" data-tint="inventory"></div>
+    <div class="bg-layer bg-tint tint-comms" data-depth="4" data-tint="comms"></div>
     <div class="bg-layer bg-horizon" data-depth="5"></div>
     <div class="bg-layer bg-motes" data-depth="9"></div>
     <div class="bg-layer bg-scrim"></div>
@@ -452,7 +502,7 @@
               <span class="label">Guardian Profile</span>
               <p class="bio">i'm a software engineer with a soft spot for systems programming, data structures, and the occasional machine learning side project. my background is in computer science, and i care more about how something works under the hood than how it looks on the surface, though that's changing too. i'm interested in software engineering roles with room to grow toward product.</p>
               <div class="quick-links">
-                <a class="btn btn-gold" href="mailto:odhussain@dons.usfca.edu">Email</a>
+                <a class="btn btn-accent" href="mailto:odhussain@dons.usfca.edu">Email</a>
                 <a class="btn" href="https://github.com/Omnitrix4m3" target="_blank" rel="noopener noreferrer">GitHub</a>
                 <a class="btn" href="https://linkedin.com/in/omar-h-680347124/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
               </div>
@@ -737,6 +787,7 @@
       };
       var order = ['character', 'inventory', 'comms'];
       var current = 'character';
+      var tints = [].slice.call(document.querySelectorAll('.bg-tint'));
 
       var IN = 'var(--swipe-dist)';
       var OUT = 'calc(-1 * var(--swipe-dist))';
@@ -765,6 +816,12 @@
         tabs.forEach(function (t) {
           t.setAttribute('aria-selected', String(t.getAttribute('data-screen') === target));
         });
+
+        document.body.setAttribute('data-theme', target);
+        tints.forEach(function (tint) {
+          tint.classList.toggle('on', tint.getAttribute('data-tint') === target);
+        });
+
         current = target;
       }
 
